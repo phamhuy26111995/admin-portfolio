@@ -10,7 +10,7 @@ import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.j
 
 const { TextArea } = Input;
 
-const AboutForm = ({ form }) => {
+const AboutForm = ({ form, language }) => {
   const [about, setAbout] = useRecoilState(aboutState);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -25,14 +25,14 @@ const AboutForm = ({ form }) => {
           ...form.getFieldsValue(),
           about: data
         });
-        if (data.video) {
-          setVideoUrl(data.video);
+        if (data.video && data.video[language]) {
+          setVideoUrl(data.video[language]);
         }
       }
     };
 
     fetchAboutData();
-  }, [setAbout, form]);
+  }, [setAbout, form, language]);
 
   const beforeUpload = (file) => {
     setFile(file);
@@ -63,7 +63,10 @@ const AboutForm = ({ form }) => {
         ...form.getFieldsValue(),
         about: {
           ...form.getFieldValue('about'),
-          video: videoUrl
+          video: {
+            ...form.getFieldValue(['about', 'video']),
+            [language]: videoUrl
+          }
         }
       });
       setFile(null);
@@ -78,19 +81,13 @@ const AboutForm = ({ form }) => {
 
   return (
     <>
-      <Form.Item label="English Description" name={['about','content', 'en-US', 'description']}>
+      <Form.Item label="Description" name={['about', 'content', language, 'description']}>
         <TextArea rows={4} />
       </Form.Item>
-      <Form.Item label="English Introduce" name={['about','content', 'en-US', 'introduce']}>
+      <Form.Item label="Introduce" name={['about', 'content', language, 'introduce']}>
         <Input />
       </Form.Item>
-      <Form.Item label="Vietnamese Description" name={['about','content', 'vi-VN', 'description']}>
-        <TextArea rows={4} />
-      </Form.Item>
-      <Form.Item label="Vietnamese Introduce" name={['about','content', 'vi-VN', 'introduce']}>
-        <Input />
-      </Form.Item>
-      <Form.Item label="Video URL" name={['about','video']}>
+      <Form.Item label="Video URL" name={['about', 'video', language]}>
         <Input value={videoUrl}  />
       </Form.Item>
       <Form.Item label="Upload Video">

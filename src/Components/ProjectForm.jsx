@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, Tabs, Upload, message } from 'antd';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import {DeleteOutlined, PlusOutlined, UploadOutlined} from '@ant-design/icons';
 import { useRecoilState } from 'recoil';
 import { personalProjectsState } from "./recoil/state.js";
-import { getData, updateData } from "../firebaseFunctions.js";
+import {getData, updateData} from "../firebaseFunctions.js";
 import { database } from '../firebaseConfig';
 import axios from 'axios';
 import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.js";
@@ -11,7 +11,7 @@ import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.j
 const { TextArea } = Input;
 const { TabPane } = Tabs;
 
-const ProjectForm = ({ projectKey, form }) => {
+const ProjectForm = ({ projectKey, form, language, onDelete }) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(form.getFieldValue(['personalProjects', 'listProject', projectKey, 'image']) || '');
@@ -66,22 +66,13 @@ const ProjectForm = ({ projectKey, form }) => {
 
   return (
     <>
-      <Form.Item label="Project Name (EN)" name={['personalProjects', 'listProject', projectKey, 'content', 'en-US', 'projectName']}>
+      <Form.Item label="Project Name" name={['personalProjects', 'listProject', projectKey, 'content', language, 'projectName']}>
         <Input />
       </Form.Item>
-      <Form.Item label="Project Description (EN)" name={['personalProjects', 'listProject', projectKey, 'content', 'en-US', 'projectDescription']}>
+      <Form.Item label="Project Description" name={['personalProjects', 'listProject', projectKey, 'content', language, 'projectDescription']}>
         <TextArea rows={4} />
       </Form.Item>
-      <Form.Item label="Project Link (EN)" name={['personalProjects', 'listProject', projectKey, 'content', 'en-US', 'projectLink']}>
-        <Input />
-      </Form.Item>
-      <Form.Item label="Project Name (VI)" name={['personalProjects', 'listProject', projectKey, 'content', 'vi-VN', 'projectName']}>
-        <Input />
-      </Form.Item>
-      <Form.Item label="Project Description (VI)" name={['personalProjects', 'listProject', projectKey, 'content', 'vi-VN', 'projectDescription']}>
-        <TextArea rows={4} />
-      </Form.Item>
-      <Form.Item label="Project Link (VI)" name={['personalProjects', 'listProject', projectKey, 'content', 'vi-VN', 'projectLink']}>
+      <Form.Item label="Project Link" name={['personalProjects', 'listProject', projectKey, 'content', language, 'projectLink']}>
         <Input />
       </Form.Item>
       <Form.Item label="Project Image URL" name={['personalProjects', 'listProject', projectKey, 'image']}>
@@ -112,8 +103,7 @@ const ProjectForm = ({ projectKey, form }) => {
     </>
   );
 };
-
-const PersonalProjectsForm = ({ form }) => {
+const PersonalProjectsForm = ({ form, language }) => {
   const [personalProjects, setPersonalProjects] = useRecoilState(personalProjectsState);
   const [projectKeys, setProjectKeys] = useState([]);
 
@@ -167,12 +157,51 @@ const PersonalProjectsForm = ({ form }) => {
     });
   };
 
+  const deleteProject = (projectKey) => {
+    const updatedProjectKeys = projectKeys.filter(key => key !== projectKey);
+    setProjectKeys(updatedProjectKeys);
+
+    const updatedPersonalProjects = {
+      ...personalProjects,
+      listProject: { ...personalProjects.listProject }
+    };
+    delete updatedPersonalProjects.listProject[projectKey];
+    setPersonalProjects(updatedPersonalProjects);
+
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      personalProjects: updatedPersonalProjects
+    });
+
+    // Cập nhật Firebase
+    updateData(database, 'personalProjects', updatedPersonalProjects)
+      .then(() => {
+        message.success('Project deleted successfully');
+      })
+      .catch((error) => {
+        message.error('Error deleting project: ' + error.message);
+      });
+  };
+
   return (
     <div>
       <Tabs defaultActiveKey="1">
         {projectKeys.map((projectKey) => (
-          <TabPane tab={`Project ${projectKey.replace('project', '')}`} key={projectKey}>
-            <ProjectForm projectKey={projectKey} form={form} />
+          <TabPane
+            tab={
+              <span>
+                Project {projectKey.replace('project', '')}
+                <Button
+                  type="danger"
+                  icon={<DeleteOutlined />}
+                  onClick={() => deleteProject(projectKey)}
+                  style={{ marginLeft: 8 }}
+                />
+              </span>
+            }
+            key={projectKey}
+          >
+            <ProjectForm projectKey={projectKey} form={form} language={language} />
           </TabPane>
         ))}
         <TabPane
@@ -187,6 +216,4 @@ const PersonalProjectsForm = ({ form }) => {
     </div>
   );
 };
-
 export default PersonalProjectsForm;
-

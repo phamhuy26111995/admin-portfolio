@@ -1,12 +1,11 @@
-import React, {useEffect} from 'react';
-import {Form, Input} from 'antd';
-import {useRecoilState} from 'recoil';
-import {headerState} from "./recoil/state.js";
-import {getData} from "../firebaseFunctions.js";
-import {database} from "../firebaseConfig"
+import React, { useEffect } from 'react';
+import { Form, Input } from 'antd';
+import { useRecoilState } from 'recoil';
+import { headerState } from "./recoil/state.js";
+import { getData } from "../firebaseFunctions.js";
+import { database } from "../firebaseConfig"
 
-
-const HeaderForm = ({ form }) => {
+const HeaderForm = ({ form, language }) => {
   const [header, setHeader] = useRecoilState(headerState);
 
   useEffect(() => {
@@ -26,10 +25,10 @@ const HeaderForm = ({ form }) => {
 
   return (
     <>
-      <Form.Item label="First Name" name={['header','leftContent', 'firstname']}>
+      <Form.Item label="First Name" name={['header', 'leftContent', 'firstname']}>
         <Input />
       </Form.Item>
-      <Form.Item label="Surname" name={['header','leftContent', 'surname']}>
+      <Form.Item label="Surname" name={['header', 'leftContent', 'surname']}>
         <Input />
       </Form.Item>
     </>

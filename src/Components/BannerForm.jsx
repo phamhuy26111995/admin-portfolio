@@ -6,11 +6,11 @@ import { database } from "../firebaseConfig.js";
 import { getData } from "../firebaseFunctions.js";
 import { useRecoilState } from "recoil";
 import axios from 'axios';
-import {CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL} from "../cloudDinaryConfig.js";
+import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.js";
 
 const { TextArea } = Input;
 
-const BannerForm = ({ form }) => {
+const BannerForm = ({ form, language }) => {
   const [banner, setBanner] = useRecoilState(bannerState);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -81,23 +81,35 @@ const BannerForm = ({ form }) => {
 
   return (
     <>
-      <Form.Item label="First Name" name={['banner','content', 'firstname']}>
+      <Form.Item label="First Name" name={['banner', 'content', 'firstname']}>
         <Input />
       </Form.Item>
-      <Form.Item label="Surname" name={['banner','content', 'surname']}>
+      <Form.Item label="Surname" name={['banner', 'content', 'surname']}>
         <Input />
       </Form.Item>
-      <Form.Item label="Introduce" name={['banner','content', 'introduce']}>
+      <Form.Item label="Introduce" name={['banner', 'content', 'introduce', language]}>
         <TextArea rows={4} />
       </Form.Item>
-      <Form.Item label="Role 1" name={['banner','content', 'role', 'role_1']}>
+      <Form.Item label="Role 1" name={['banner', 'content', 'role', 'role_1']}>
         <Input />
       </Form.Item>
-      <Form.Item label="Role 2" name={['banner','content', 'role', 'role_2']}>
+      <Form.Item label="Role 2" name={['banner', 'content', 'role', 'role_2']}>
         <Input />
       </Form.Item>
-      <Form.Item label="Image URL" name={['banner','content', 'image']}>
-        <Input  value={imageUrl} />
+      <Form.Item label="CV URL" name={['banner', 'content', 'cvUrl']}>
+        <Input />
+      </Form.Item>
+      <Form.Item label="Facebook Link" name={['banner', 'content', 'facebookLink']}>
+        <Input />
+      </Form.Item>
+      <Form.Item label="GitHub Link" name={['banner', 'content', 'githubLink']}>
+        <Input />
+      </Form.Item>
+      <Form.Item label="LinkedIn Link" name={['banner', 'content', 'linkedinLink']}>
+        <Input />
+      </Form.Item>
+      <Form.Item label="Image URL" name={['banner', 'content', 'image']}>
+        <Input disabled value={imageUrl} />
       </Form.Item>
       <Form.Item label="Upload Image">
         <Upload
