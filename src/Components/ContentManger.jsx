@@ -1,22 +1,24 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Form, Button, Tabs, Layout, Menu, Dropdown } from 'antd';
-import { useRecoilState } from 'recoil';
-import { UserOutlined, DownOutlined, GlobalOutlined } from '@ant-design/icons';
-import { userState } from './recoil/state';
+import React, {useState} from 'react';
+import {Button, Dropdown, Form, Layout, message, Tabs} from 'antd';
+import {DownOutlined, GlobalOutlined, UserOutlined} from '@ant-design/icons';
 import AboutForm from './AboutForm';
 import BannerForm from './BannerForm';
 import HeaderForm from './HeaderForm';
 import PersonalProjectsForm from "./ProjectForm";
-import { message } from 'antd';
 import {updateData} from "../firebaseFunctions.js";
-import {database} from "../firebaseConfig.js";
+import {auth, database} from "../firebaseConfig.js";
+import {signOut} from "firebase/auth";
 
 const { Header, Content } = Layout;
-
+const logout = async (auth) => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+  }
+};
 const ContentManager = () => {
   const [form] = Form.useForm();
   const [iframeKey, setIframeKey] = useState(0);
-  const [user, setUser] = useRecoilState(userState);
   const [language, setLanguage] = useState('en-US'); // Thêm trạng thái cho ngôn ngữ
   const [activeTab, setActiveTab] = useState('1'); // Thêm trạng thái cho tab hiện tại
 
@@ -51,7 +53,7 @@ const ContentManager = () => {
   };
 
   const handleLogout = () => {
-    setUser(null);
+    logout(auth)
     console.log('Logout');
   };
 
@@ -128,7 +130,7 @@ const ContentManager = () => {
         </Dropdown>
         <Dropdown menu={{ items: userItems }} trigger={['click']}>
           <Button icon={<UserOutlined />}>
-            {user ? user.username : 'User'} <DownOutlined />
+            User <DownOutlined />
           </Button>
         </Dropdown>
       </Header>

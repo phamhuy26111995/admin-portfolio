@@ -4,9 +4,9 @@ import AuthenticationComponent from "./Components/AuthenticationComponent.jsx";
 
 function App() {
   return (
-    // <AuthenticationComponent>
+    <AuthenticationComponent>
       <ContentManger/>
-    // </AuthenticationComponent>
+    </AuthenticationComponent>
   )
 }
 
