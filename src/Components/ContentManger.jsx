@@ -7,7 +7,7 @@ import HeaderForm from './HeaderForm';
 import PersonalProjectsForm from "./ProjectForm";
 import {updateData} from "../firebaseFunctions.js";
 import {auth, database} from "../firebaseConfig.js";
-import {signOut} from "firebase/auth";
+import {getAuth, signOut} from "firebase/auth";
 
 const { Header, Content } = Layout;
 const logout = async (auth) => {
@@ -21,7 +21,7 @@ const ContentManager = () => {
   const [iframeKey, setIframeKey] = useState(0);
   const [language, setLanguage] = useState('en-US'); // Thêm trạng thái cho ngôn ngữ
   const [activeTab, setActiveTab] = useState('1'); // Thêm trạng thái cho tab hiện tại
-
+  const currentUser = getAuth().currentUser;
   const onFinish = async (values) => {
     try {
       setIframeKey(iframeKey + 1); // This will force the iframe to reload
@@ -130,7 +130,7 @@ const ContentManager = () => {
         </Dropdown>
         <Dropdown menu={{ items: userItems }} trigger={['click']}>
           <Button icon={<UserOutlined />}>
-            User <DownOutlined />
+            {currentUser && currentUser.displayName} <DownOutlined />
           </Button>
         </Dropdown>
       </Header>

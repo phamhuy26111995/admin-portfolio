@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, Tabs, Upload, message } from 'antd';
 import {DeleteOutlined, PlusOutlined, UploadOutlined} from '@ant-design/icons';
 import { useRecoilState } from 'recoil';
-import { personalProjectsState } from "./recoil/state.js";
+
 import {getData, updateData} from "../firebaseFunctions.js";
 import { database } from '../firebaseConfig';
 import axios from 'axios';
 import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.js";
+import { personalProjectsState } from '../recoil/atom.jsx';
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;

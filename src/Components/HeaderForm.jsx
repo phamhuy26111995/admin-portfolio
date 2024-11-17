@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Form, Input } from 'antd';
 import { useRecoilState } from 'recoil';
-import { headerState } from "./recoil/state.js";
+
 import { getData } from "../firebaseFunctions.js";
 import { database } from "../firebaseConfig"
+import { headerState } from '../recoil/atom.jsx';
 
 const HeaderForm = ({ form, language }) => {
   const [header, setHeader] = useRecoilState(headerState);

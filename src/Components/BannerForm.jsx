@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { bannerState } from "./recoil/state.js";
+
 import { database } from "../firebaseConfig.js";
 import { getData } from "../firebaseFunctions.js";
 import { useRecoilState } from "recoil";
 import axios from 'axios';
 import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.js";
+import { bannerState } from '../recoil/atom.jsx';
 
 const { TextArea } = Input;
 

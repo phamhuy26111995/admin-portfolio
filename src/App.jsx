@@ -1,6 +1,6 @@
 import './App.css'
-import ContentManger from "./Components/ContentManger.jsx";
-import AuthenticationComponent from "./Components/AuthenticationComponent.jsx";
+import ContentManger from "./components/ContentManger.jsx";
+import AuthenticationComponent from "./components/AuthenticationComponent.jsx";
 
 function App() {
   return (

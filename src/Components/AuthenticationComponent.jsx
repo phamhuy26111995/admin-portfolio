@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import {onAuthStateChanged, signInWithPopup, signOut} from "firebase/auth";
 import {provider, auth, database} from "../firebaseConfig.js";
 import {getData} from "../firebaseFunctions.js";
+import { useSetRecoilState } from 'recoil';
+import { userLoginState } from '../recoil/atom.jsx';
 
-const login = async () => {
+const login = async (setUserState) => {
   try {
     console.log("Popup opening...")
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     const userEmail = user.email;
-
+    setUserState(user);
     const acceptedEmailsString= await getData(database, 'acceptedEmail');
     const acceptedEmailsArray = acceptedEmailsString.split(',');
     if (acceptedEmailsArray.includes(userEmail)) {
@@ -30,11 +32,12 @@ const login = async () => {
 };
 const WithAuthentication = ({ children }) => {
   const [user, setUser] = useState(null);
-
+  const setUserState = useSetRecoilState(userLoginState);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
+        
       } else {
         setUser(null);
       }
@@ -45,7 +48,7 @@ const WithAuthentication = ({ children }) => {
   }, []);
 
   const handleLogin = () => {
-    login(auth, provider);
+    login(setUserState);
   };
 
   return (

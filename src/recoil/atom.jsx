@@ -1,9 +1,11 @@
 import { atom } from 'recoil';
 
+
 export const aboutState = atom({
   key: 'aboutState',
   default: null,
 });
+
 
 export const bannerState = atom({
   key: 'bannerState',
@@ -17,5 +19,11 @@ export const headerState = atom({
 
 export const personalProjectsState = atom({
   key: 'personalProjectsState',
+  default: null,
+});
+
+
+export const userLoginState = atom({
+  key: 'userLoginState',
   default: null,
 });
