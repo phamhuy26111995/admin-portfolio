@@ -4,7 +4,7 @@ import {DeleteOutlined, PlusOutlined, UploadOutlined} from '@ant-design/icons';
 import { useRecoilState } from 'recoil';
 
 import {getData, updateData} from "../firebaseFunctions.js";
-import { database } from '../firebaseConfig';
+import { database } from '../firebaseConfig.js';
 import axios from 'axios';
 import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.js";
 import { personalProjectsState } from '../recoil/atom.jsx';

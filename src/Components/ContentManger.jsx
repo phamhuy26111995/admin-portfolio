@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {Button, Dropdown, Form, Layout, message, Tabs} from 'antd';
 import {DownOutlined, GlobalOutlined, UserOutlined} from '@ant-design/icons';
-import AboutForm from './AboutForm';
-import BannerForm from './BannerForm';
-import HeaderForm from './HeaderForm';
-import PersonalProjectsForm from "./ProjectForm";
+import AboutForm from './AboutForm.jsx';
+import BannerForm from './BannerForm.jsx';
+import HeaderForm from './HeaderForm.jsx';
+import PersonalProjectsForm from "./ProjectForm.jsx";
 import {updateData} from "../firebaseFunctions.js";
 import {auth, database} from "../firebaseConfig.js";
 import {getAuth, signOut} from "firebase/auth";
