@@ -4,7 +4,7 @@ import {DownOutlined, GlobalOutlined, UserOutlined} from '@ant-design/icons';
 import AboutForm from './AboutForm';
 import BannerForm from './BannerForm';
 import HeaderForm from './HeaderForm';
-import PersonalProjectsForm from "./ProjectForm";
+import PersonalProjectsForm from "./PersonalProjectForm.jsx";
 import {updateData} from "../firebaseFunctions.js";
 import {auth, database} from "../firebaseConfig.js";
 import {getAuth, signOut} from "firebase/auth";
