@@ -3,7 +3,7 @@ import { Form, Input } from 'antd';
 import { useRecoilState } from 'recoil';
 
 import { getData } from "../firebaseFunctions.js";
-import { database } from "../firebaseConfig"
+import { database } from "../firebaseConfig.js"
 import { headerState } from '../recoil/atom.jsx';
 
 const HeaderForm = ({ form, language }) => {
