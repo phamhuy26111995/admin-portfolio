@@ -7,7 +7,7 @@ import { getData } from "../firebaseFunctions.js";
 import { useRecoilState, useRecoilValue } from "recoil";
 import axios from 'axios';
 import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.js";
-import { aboutState, userLoginState } from '../recoil/atom.jsx';
+import { aboutState, allowedUsersLogin, userLoginState } from '../recoil/atom.jsx';
 import { getAuth } from 'firebase/auth';
 
 const { TextArea } = Input;
@@ -18,7 +18,6 @@ const AboutForm = ({ form, language }) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
-  
   useEffect(() => {
     const fetchAboutData = async () => {
       const data = await getData(database, 'about');

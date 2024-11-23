@@ -27,3 +27,13 @@ export const userLoginState = atom({
   key: 'userLoginState',
   default: null,
 });
+
+export const allowedUsersLogin = atom({
+  key: 'allowedUsersLogin',
+  default: ['pham.huy.19951126@gmail.com'],
+});
+
+export const currentLanguage = atom({
+  key: 'currentLanguage',
+  default: 'en-US',
+});

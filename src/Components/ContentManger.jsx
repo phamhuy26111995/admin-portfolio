@@ -8,6 +8,9 @@ import PersonalProjectsForm from "./PersonalProjectForm.jsx";
 import {updateData} from "../firebaseFunctions.js";
 import {auth, database} from "../firebaseConfig.js";
 import {getAuth, signOut} from "firebase/auth";
+import RealProjects from './real_projects/RealProjects.jsx';
+import { useSetRecoilState } from 'recoil';
+import { currentLanguage } from '../recoil/atom.jsx';
 
 const { Header, Content } = Layout;
 const logout = async (auth) => {
@@ -19,6 +22,7 @@ const logout = async (auth) => {
 const ContentManager = () => {
   const [form] = Form.useForm();
   const [iframeKey, setIframeKey] = useState(0);
+  const setCurrentLanguage = useSetRecoilState(currentLanguage);
   const [language, setLanguage] = useState('en-US'); // Thêm trạng thái cho ngôn ngữ
   const [activeTab, setActiveTab] = useState('1'); // Thêm trạng thái cho tab hiện tại
   const currentUser = getAuth().currentUser;
@@ -29,21 +33,25 @@ const ContentManager = () => {
       // Cập nhật dữ liệu của tab hiện tại
       switch (activeTab) {
         case '1':
-          await updateData(database, 'about', values.about);
+          // await updateData(database, 'about', values.about);
           message.success('About tab updated successfully.');
           break;
         case '2':
-          await updateData(database, 'banner', values.banner);
+          // await updateData(database, 'banner', values.banner);
           message.success('Banner tab updated successfully.');
           break;
         case '3':
-          await updateData(database, 'header', values.header);
+          // await updateData(database, 'header', values.header);
           message.success('Header tab updated successfully.');
           break;
         case '4':
-          await updateData(database, 'personalProjects', values.personalProjects);
+          // await updateData(database, 'personalProjects', values.personalProjects);
           message.success('Personal Projects tab updated successfully.');
           break;
+          case '5':
+            console.log(values.realProjects)
+            message.success('Personal Projects tab updated successfully.');
+            break;
         default:
           break;
       }
@@ -59,6 +67,7 @@ const ContentManager = () => {
 
   const handleLanguageChange = ({ key }) => {
     setLanguage(key); // Cập nhật ngôn ngữ
+    setCurrentLanguage(key)
   };
 
   const userItems = [
@@ -117,6 +126,11 @@ const ContentManager = () => {
       key: '4',
       label: 'Personal Projects',
       children: <PersonalProjectsForm form={form} language={language} />,
+    },
+    {
+      key: '5',
+      label: 'Real Projects',
+      children: <RealProjects form={form}  />,
     },
   ];
 

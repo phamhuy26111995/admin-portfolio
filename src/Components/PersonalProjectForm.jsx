@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Tabs, Upload, message } from 'antd';
-import {DeleteOutlined, PlusOutlined, UploadOutlined} from '@ant-design/icons';
-import { useRecoilState } from 'recoil';
+import React, { useEffect, useState } from "react";
+import { Button, Form, Input, Tabs, Upload, message } from "antd";
+import {
+  DeleteOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import { useRecoilState } from "recoil";
 
-import {getData, updateData} from "../firebaseFunctions.js";
-import { database } from '../firebaseConfig.js';
-import axios from 'axios';
-import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from "../cloudDinaryConfig.js";
-import { personalProjectsState } from '../recoil/atom.jsx';
+import { getData, updateData } from "../firebaseFunctions.js";
+import { database } from "../firebaseConfig.js";
+import axios from "axios";
+import {
+  CLOUDINARY_UPLOAD_PRESET,
+  CLOUDINARY_URL,
+} from "../cloudDinaryConfig.js";
+import { personalProjectsState } from "../recoil/atom.jsx";
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;
@@ -15,7 +22,14 @@ const { TabPane } = Tabs;
 const ProjectForm = ({ projectKey, form, language, onDelete }) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(form.getFieldValue(['personalProjects', 'listProject', projectKey, 'image']) || '');
+  const [imageUrl, setImageUrl] = useState(
+    form.getFieldValue([
+      "personalProjects",
+      "listProject",
+      projectKey,
+      "image",
+    ]) || ""
+  );
 
   const beforeUpload = (file) => {
     setFile(file);
@@ -24,7 +38,7 @@ const ProjectForm = ({ projectKey, form, language, onDelete }) => {
 
   const handleUpload = async () => {
     if (!file) {
-      message.error('Please select an image to upload!');
+      message.error("Please select an image to upload!");
       return;
     }
 
@@ -32,34 +46,38 @@ const ProjectForm = ({ projectKey, form, language, onDelete }) => {
 
     try {
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      formData.append("file", file);
+      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
       const response = await axios.post(CLOUDINARY_URL, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
       const imageUrl = response.data.secure_url;
       setImageUrl(imageUrl);
       form.setFieldsValue({
         ...form.getFieldsValue(),
         personalProjects: {
-          ...form.getFieldValue('personalProjects'),
+          ...form.getFieldValue("personalProjects"),
           listProject: {
-            ...form.getFieldValue(['personalProjects', 'listProject']),
+            ...form.getFieldValue(["personalProjects", "listProject"]),
             [projectKey]: {
-              ...form.getFieldValue(['personalProjects', 'listProject', projectKey]),
-              image: imageUrl
-            }
-          }
-        }
+              ...form.getFieldValue([
+                "personalProjects",
+                "listProject",
+                projectKey,
+              ]),
+              image: imageUrl,
+            },
+          },
+        },
       });
       setFile(null);
-      message.success('Upload successful!');
+      message.success("Upload successful!");
     } catch (error) {
-      console.error('Error uploading image:', error);
-      message.error('Upload failed!');
+      console.error("Error uploading image:", error);
+      message.error("Upload failed!");
     } finally {
       setLoading(false);
     }
@@ -67,16 +85,49 @@ const ProjectForm = ({ projectKey, form, language, onDelete }) => {
 
   return (
     <>
-      <Form.Item label="Project Name" name={['personalProjects', 'listProject', projectKey, 'content', language, 'projectName']}>
+      <Form.Item
+        label="Project Name"
+        name={[
+          "personalProjects",
+          "listProject",
+          projectKey,
+          "content",
+          language,
+          "projectName",
+        ]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item label="Project Description" name={['personalProjects', 'listProject', projectKey, 'content', language, 'projectDescription']}>
+      <Form.Item
+        label="Project Description"
+        name={[
+          "personalProjects",
+          "listProject",
+          projectKey,
+          "content",
+          language,
+          "projectDescription",
+        ]}
+      >
         <TextArea rows={4} />
       </Form.Item>
-      <Form.Item label="Project Link" name={['personalProjects', 'listProject', projectKey, 'content', language, 'projectLink']}>
+      <Form.Item
+        label="Project Link"
+        name={[
+          "personalProjects",
+          "listProject",
+          projectKey,
+          "content",
+          language,
+          "projectLink",
+        ]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item label="Project Image URL" name={['personalProjects', 'listProject', projectKey, 'image']}>
+      <Form.Item
+        label="Project Image URL"
+        name={["personalProjects", "listProject", projectKey, "image"]}
+      >
         <Input disabled value={imageUrl} />
       </Form.Item>
       <Form.Item label="Upload Image">
@@ -98,24 +149,30 @@ const ProjectForm = ({ projectKey, form, language, onDelete }) => {
       </Form.Item>
       {imageUrl && (
         <Form.Item label="Image Preview">
-          <img src={imageUrl} alt="Image Preview" style={{ width: '200px', marginTop: '16px' }} />
+          <img
+            src={imageUrl}
+            alt="Image Preview"
+            style={{ width: "200px", marginTop: "16px" }}
+          />
         </Form.Item>
       )}
     </>
   );
 };
 const PersonalProjectsForm = ({ form, language }) => {
-  const [personalProjects, setPersonalProjects] = useRecoilState(personalProjectsState);
+  const [personalProjects, setPersonalProjects] = useRecoilState(
+    personalProjectsState
+  );
   const [projectKeys, setProjectKeys] = useState([]);
 
   useEffect(() => {
     const fetchPersonalProjectsData = async () => {
-      const data = await getData(database, 'personalProjects');
+      const data = await getData(database, "personalProjects");
       if (data) {
         setPersonalProjects(data);
         form.setFieldsValue({
           ...form.getFieldsValue(),
-          personalProjects: data
+          personalProjects: data,
         });
         setProjectKeys(Object.keys(data.listProject || {}));
       }
@@ -144,43 +201,51 @@ const PersonalProjectsForm = ({ form, language }) => {
         ...personalProjects.listProject,
         [newKey]: {
           content: {
-            'en-US': { projectName: '', projectDescription: '', projectLink: '' },
-            'vi-VN': { projectName: '', projectDescription: '', projectLink: '' }
+            "en-US": {
+              projectName: "",
+              projectDescription: "",
+              projectLink: "",
+            },
+            "vi-VN": {
+              projectName: "",
+              projectDescription: "",
+              projectLink: "",
+            },
           },
-          image: ''
-        }
-      }
+          image: "",
+        },
+      },
     };
     setPersonalProjects(updatedPersonalProjects);
     form.setFieldsValue({
       ...form.getFieldsValue(),
-      personalProjects: updatedPersonalProjects
+      personalProjects: updatedPersonalProjects,
     });
   };
 
   const deleteProject = (projectKey) => {
-    const updatedProjectKeys = projectKeys.filter(key => key !== projectKey);
+    const updatedProjectKeys = projectKeys.filter((key) => key !== projectKey);
     setProjectKeys(updatedProjectKeys);
 
     const updatedPersonalProjects = {
       ...personalProjects,
-      listProject: { ...personalProjects.listProject }
+      listProject: { ...personalProjects.listProject },
     };
     delete updatedPersonalProjects.listProject[projectKey];
     setPersonalProjects(updatedPersonalProjects);
 
     form.setFieldsValue({
       ...form.getFieldsValue(),
-      personalProjects: updatedPersonalProjects
+      personalProjects: updatedPersonalProjects,
     });
 
     // Cập nhật Firebase
-    updateData(database, 'personalProjects', updatedPersonalProjects)
+    updateData(database, "personalProjects", updatedPersonalProjects)
       .then(() => {
-        message.success('Project deleted successfully');
+        message.success("Project deleted successfully");
       })
       .catch((error) => {
-        message.error('Error deleting project: ' + error.message);
+        message.error("Error deleting project: " + error.message);
       });
   };
 
@@ -191,7 +256,7 @@ const PersonalProjectsForm = ({ form, language }) => {
           <TabPane
             tab={
               <span>
-                Project {projectKey.replace('project', '')}
+                Project {projectKey.replace("project", "")}
                 <Button
                   type="danger"
                   icon={<DeleteOutlined />}
@@ -202,7 +267,11 @@ const PersonalProjectsForm = ({ form, language }) => {
             }
             key={projectKey}
           >
-            <ProjectForm projectKey={projectKey} form={form} language={language} />
+            <ProjectForm
+              projectKey={projectKey}
+              form={form}
+              language={language}
+            />
           </TabPane>
         ))}
         <TabPane

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {onAuthStateChanged, signInWithPopup, signOut} from "firebase/auth";
 import {provider, auth, database} from "../firebaseConfig.js";
 import {getData} from "../firebaseFunctions.js";
-import { useSetRecoilState } from 'recoil';
-import { userLoginState } from '../recoil/atom.jsx';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import { allowedUsersLogin, userLoginState } from '../recoil/atom.jsx';
 
 const login = async (setUserState) => {
   try {
@@ -13,6 +13,10 @@ const login = async (setUserState) => {
     const userEmail = user.email;
     setUserState(user);
     const acceptedEmailsString= await getData(database, 'acceptedEmail');
+
+    if(!acceptedEmailsString) logout(auth);
+    debugger
+
     const acceptedEmailsArray = acceptedEmailsString.split(',');
     if (acceptedEmailsArray.includes(userEmail)) {
       console.log("Login successful. Email is accepted:", userEmail);
@@ -24,12 +28,22 @@ const login = async (setUserState) => {
           await signOut(auth);
         } catch (error) {}
       };
-      logout(auth)
+      await logout(auth)
     }
   } catch (error) {
     console.error("Error during login:", error.message);
   }
 };
+
+// async function logout(auth) {
+//   try {
+//     await signOut(auth);
+//   } catch (error) {
+//     console.error('Error signing out:', error);
+//   }
+// }
+
+
 const WithAuthentication = ({ children }) => {
   const [user, setUser] = useState(null);
   const setUserState = useSetRecoilState(userLoginState);
@@ -65,6 +79,7 @@ const WithAuthentication = ({ children }) => {
 export default WithAuthentication;
 
 const LoginModal = ({handleLogin}) => {
+
 
   return (
     <div style={styles.backdrop}>
