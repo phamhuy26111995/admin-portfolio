@@ -2,6 +2,7 @@ import React from "react";
 import { DatePicker, Form, Input } from "antd";
 import { currentLanguage } from "../../recoil/atom";
 import { useRecoilValue } from "recoil";
+import DescriptionDetail from "./DescriptionDetail";
 
 function TabContent() {
   const language = useRecoilValue(currentLanguage);
@@ -32,12 +33,12 @@ function TabContent() {
           <Input />
         </Form.Item>
 
-        <Form.Item label="Technologies" name={['realProjects',language, "projectInfo", "technologies"]}>
+        <Form.Item  label="Technologies" name={['realProjects',language, "projectInfo", "technologies"]}>
           <Input />
         </Form.Item>
 
-        <Form.Item label="Description Details" name={['realProjects',language, "projectInfo", "descriptionDetail"]}>
-
+        <Form.Item noStyle label="Description Details" name={['realProjects',language, "projectInfo", "descriptionDetail"]}>
+          <DescriptionDetail />
         </Form.Item>
     </>
   );

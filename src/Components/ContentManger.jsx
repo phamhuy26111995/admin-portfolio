@@ -157,7 +157,7 @@ const ContentManager = () => {
                 items={tabItems}
                 onChange={(key) => setActiveTab(key)} // Cập nhật trạng thái khi tab thay đổi
               />
-              <Form.Item>
+              <Form.Item className='mt-6'>
                 <Button type="primary" htmlType="submit">
                   Save
                 </Button>

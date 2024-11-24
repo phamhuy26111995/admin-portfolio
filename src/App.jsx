@@ -1,13 +1,12 @@
-import './App.css'
 import ContentManger from "./components/ContentManger.jsx";
 import AuthenticationComponent from "./components/AuthenticationComponent.jsx";
 
 function App() {
   return (
     <AuthenticationComponent>
-      <ContentManger/>
+      <ContentManger />
     </AuthenticationComponent>
-  )
+  );
 }
 
-export default App
+export default App;
