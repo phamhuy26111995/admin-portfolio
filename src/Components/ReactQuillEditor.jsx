@@ -202,14 +202,14 @@ const ReactQuillEditor = ({onChange}) => {
         className="h-96 mb-12"
       />
       
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <h3 className="text-lg font-semibold mb-2">Preview:</h3>
         <div 
           className="border p-4 rounded"
           
         />
           {parse(value)}
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -21,7 +21,7 @@ function DescriptionDetail({onChange}) {
   const quillRef = useRef();
 
   function onChangeContent(value) {
-      console.log("RichTextEditor value:", value);
+      onChange(value);
   }
 
   // Hàm xử lý upload hình ảnh

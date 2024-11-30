@@ -1,30 +1,58 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TabContent from "../TabContent";
-
-const initialItems = [
-  {
-    label: "Tab 1",
-    children: "Content of Tab 1",
-    key: "1",
-  },
-  {
-    label: "Tab 2",
-    children: "Content of Tab 2",
-    key: "2",
-  },
-  {
-    label: "Tab 3",
-    children: "Content of Tab 3",
-    key: "3",
-  },
-];
+import { database } from "../../../firebaseConfig";
+import { getData } from "../../../firebaseFunctions";
+import { useRecoilValue } from "recoil";
+import { currentLanguage } from "../../../recoil/atom";
 
 function useCreateTabItem(form) {
-  const [activeKey, setActiveKey] = useState(initialItems[0].key);
-
-  const [items, setItems] = useState(initialItems);
+  const [activeKey, setActiveKey] = useState(0);
+  const language = useRecoilValue(currentLanguage);
+  const [items, setItems] = useState([]);
   const newTabIndex = useRef(0);
 
+
+  useEffect(() => {
+    getRealProjects();
+  },[])
+
+  async function getRealProjects() {
+    const data = await getData(database, 'realProjects');
+
+    if(!data) return
+    
+    Object.keys(data).forEach((key) => {
+      const item = {
+        key: key,
+        label: data[key][language]['projectInfo']['title'],
+        children: <TabContent key={key} tabName={key}  />,
+      };
+      setItems((prevItems) => [...prevItems, item]);
+
+      
+    })
+
+    const maxProjectNumber = getMaxProjectNumber(data);
+
+    newTabIndex.current = maxProjectNumber;
+
+    form.setFieldsValue({ realProjects: data });
+  }
+
+  function getMaxProjectNumber(data) {
+    // Lấy các key từ object
+    const keys = Object.keys(data);
+  
+    // Tách số từ key và tìm số lớn nhất
+    const maxNumber = keys
+      .map(key => parseInt(key.replace("project_", ""), 10)) // Tách số từ key
+      .filter(num => !isNaN(num)) // Lọc các giá trị hợp lệ (không phải NaN)
+      .reduce((max, current) => Math.max(max, current), 0); // Tìm số lớn nhất
+  
+    return maxNumber;
+  }
+  
+ 
   function onChangeActiveTab(key) {
     setActiveKey(key);
   }
@@ -61,8 +89,10 @@ function useCreateTabItem(form) {
     const newActiveKey = `project_${newTabIndex.current++}`;
     const newPanes = [...items];
     newPanes.push({
-      label: newActiveKey,
-      children: <TabContent key={newActiveKey} form={form} />,
+      label: 'New Project',
+      children: (
+        <TabContent key={newActiveKey} tabName={newActiveKey} />
+      ),
       key: newActiveKey,
     });
     setItems(newPanes);
