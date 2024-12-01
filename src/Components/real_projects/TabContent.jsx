@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
-import { DatePicker, Divider, Form, Input } from "antd";
+import { DatePicker, Divider, Form, Input, Select } from "antd";
 import { currentLanguage } from "../../recoil/atom";
 import { useRecoilValue } from "recoil";
 import DescriptionDetail from "./DescriptionDetail";
+import TechsComponent from "../TechsComponent";
+import dayjs from "dayjs";
+import DatePickerCustom from "../DatePickerCustom";
 
 function TabContent({ tabName }) {
   const language = useRecoilValue(currentLanguage);
@@ -11,29 +14,29 @@ function TabContent({ tabName }) {
     <>
       <Form.Item
         label="Description"
-        rules={[{required : true, message : "Please enter description"}]}
+        rules={[{ required: true, message: "Please enter description" }]}
         name={["realProjects", tabName, language, "description"]}
       >
         <Input.TextArea />
       </Form.Item>
       <Form.Item
         label="My Role"
-        rules={[{required : true, message : "Please enter my role"}]}
+        rules={[{ required: true, message: "Please enter my role" }]}
         name={["realProjects", tabName, language, "myRole"]}
       >
         <Input />
       </Form.Item>
 
       <Divider
-      style={{
-        borderColor: '#7cb305',
-      }}
-    >
-      Project Information
-    </Divider>
+        style={{
+          borderColor: "#7cb305",
+        }}
+      >
+        Project Information
+      </Divider>
       <Form.Item
         label="Number of Member"
-        rules={[{required : true, message : "Please enter number of member"}]}
+        rules={[{ required: true, message: "Please enter number of member" }]}
         name={[
           "realProjects",
           tabName,
@@ -46,28 +49,28 @@ function TabContent({ tabName }) {
       </Form.Item>
       <Form.Item
         label="Period"
-        rules={[{required : true, message : "Please enter period"}]}
+        rules={[{ required: true, message: "Please enter period" }]}
         name={["realProjects", tabName, language, "projectInfo", "period"]}
       >
-        <DatePicker />
+        <DatePickerCustom />
       </Form.Item>
       <Form.Item
         label="Role"
-        rules={[{required : true, message : "Please enter role"}]}
+        rules={[{ required: true, message: "Please enter role" }]}
         name={["realProjects", tabName, language, "projectInfo", "role"]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         label="Title"
-        rules={[{required : true, message : "Please enter title"}]}
+        rules={[{ required: true, message: "Please enter title" }]}
         name={["realProjects", tabName, language, "projectInfo", "title"]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         label="Technologies"
-        rules={[{required : true, message : "Please enter technologies"}]}
+        rules={[{ required: true, message: "Please enter technologies" }]}
         name={[
           "realProjects",
           tabName,
@@ -76,7 +79,7 @@ function TabContent({ tabName }) {
           "technologies",
         ]}
       >
-        <Input />
+        <TechsComponent />
       </Form.Item>
       <Form.Item
         noStyle
