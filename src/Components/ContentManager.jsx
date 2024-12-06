@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Button, Dropdown, Form, Layout, message, Tabs} from 'antd';
 import {DownOutlined, GlobalOutlined, UserOutlined} from '@ant-design/icons';
 import AboutForm from './AboutForm.jsx';
 import BannerForm from './BannerForm.jsx';
 import HeaderForm from './HeaderForm.jsx';
 import PersonalProjectsForm from "./PersonalProjectForm.jsx";
-import {updateData} from "../firebaseFunctions.js";
+import {getData, updateData} from "../firebaseFunctions.js";
 import {auth, database} from "../firebaseConfig.js";
 import {getAuth, signOut} from "firebase/auth";
 import RealProjects from './real_projects/RealProjects.jsx';
@@ -23,6 +23,7 @@ const logout = async (auth) => {
 const ContentManager = () => {
   const [form] = Form.useForm();
   const [iframeKey, setIframeKey] = useState(0);
+  const [appKey, setAppKey] = useState(1);
   const setCurrentLanguage = useSetRecoilState(currentLanguage);
   const [language, setLanguage] = useState('en-US'); // Thêm trạng thái cho ngôn ngữ
   const [activeTab, setActiveTab] = useState('1'); // Thêm trạng thái cho tab hiện tại
@@ -50,8 +51,31 @@ const ContentManager = () => {
           message.success('Personal Projects tab updated successfully.');
           break;
           case '5':
-            await updateData(database, 'realProjects', values.realProjects || {});
+            if(!values.realProjects) {
+              await updateData(database, 'realProjects',{});
+            } else {
+              const originalData = await getData(database, 'realProjects');
+              if(!originalData) {
+                await updateData(database, 'realProjects', values.realProjects);
+                return;
+              }
+
+              for (const key of Object.keys(values.realProjects)) {
+
+                await updateData(database, `realProjects/${key}/${language}`, values.realProjects[key][language]);
+            
+              }
+
+              const keysToDelete = Object.keys(originalData).filter(key => !Object.keys(values.realProjects).includes(key));
+              for (const key of keysToDelete) {
+                await updateData(database, `realProjects/${key}`, null);
+              }
+
+            }
             message.success('Personal Projects tab updated successfully.');
+            setTimeout(() => {
+              setAppKey(appKey => appKey + 1);
+            },1000)
             break;
         default:
           break;
@@ -69,6 +93,7 @@ const ContentManager = () => {
   const handleLanguageChange = ({ key }) => {
     setLanguage(key); // Cập nhật ngôn ngữ
     setCurrentLanguage(key)
+    setAppKey(appKey => appKey + 1);
   };
 
   const userItems = [
@@ -136,7 +161,7 @@ const ContentManager = () => {
   ];
 
   return (
-    <Layout>
+    <Layout key={appKey}>
       <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff' }}>
         <Dropdown menu={{ items: languageItems }} trigger={['click']}>
           <Button icon={<GlobalOutlined />}>

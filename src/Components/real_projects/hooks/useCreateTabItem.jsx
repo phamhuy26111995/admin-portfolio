@@ -27,7 +27,7 @@ function useCreateTabItem(form) {
     Object.keys(data).forEach((key) => {
       const item = {
         key: key,
-        label: data[key][language]['projectInfo']['title'],
+        label: data[key][language] ? data[key][language]['projectInfo']['title'] : 'New Project',
         children: <TabContent key={key} tabName={key}  />,
       };
       setItems((prevItems) => [...prevItems, item]);  

@@ -1,9 +1,12 @@
 import { Tabs } from "antd";
 import React from "react";
 import useCreateTabItem from "./hooks/useCreateTabItem";
+import { useRecoilValue } from "recoil";
+import { currentLanguage } from "../../recoil/atom";
 
 
 function RealProjects({ form }) {
+  
   
   const { items, activeKey, onChangeActiveTab, onEdit} = useCreateTabItem(form);
 
