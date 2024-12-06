@@ -1,10 +1,10 @@
-import ContentManger from "./components/ContentManger.jsx";
+import ContentManager from "./components/ContentManager.jsx";
 import AuthenticationComponent from "./components/AuthenticationComponent.jsx";
 
 function App() {
   return (
     <AuthenticationComponent>
-      <ContentManger />
+      <ContentManager />
     </AuthenticationComponent>
   );
 }

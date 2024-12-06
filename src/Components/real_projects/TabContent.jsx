@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
-import { DatePicker, Divider, Form, Input, Select } from "antd";
-import { currentLanguage } from "../../recoil/atom";
+import { Divider, Form, Input } from "antd";
+import React from "react";
 import { useRecoilValue } from "recoil";
-import DescriptionDetail from "./DescriptionDetail";
-import TechsComponent from "../TechsComponent";
-import dayjs from "dayjs";
+import { currentLanguage } from "../../recoil/atom";
 import DatePickerCustom from "../DatePickerCustom";
+import ReactQuillEditor from "../ReactQuillEditor";
+import TechsComponent from "../TechsComponent";
 
 function TabContent({ tabName }) {
   const language = useRecoilValue(currentLanguage);
@@ -92,7 +91,7 @@ function TabContent({ tabName }) {
           "descriptionDetail",
         ]}
       >
-        <DescriptionDetail />
+        <ReactQuillEditor />
       </Form.Item>
     </>
   );

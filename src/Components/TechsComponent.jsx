@@ -42,7 +42,7 @@ const options = [
   },
 ];
 
-function TechsComponent({ onChange }) {
+function TechsComponent({ onChange, value }) {
   function onChangeValue(value) {
     onChange(value);
   }
@@ -54,6 +54,7 @@ function TechsComponent({ onChange }) {
       placeholder={"Please select"}
       mode="multiple"
       style={{ width: "100%" }}
+      value={value}
       options={options}
     />
   );

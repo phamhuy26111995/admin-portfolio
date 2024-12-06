@@ -1,14 +1,15 @@
-import React, { useState, useRef, forwardRef, useCallback, useEffect } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { CLOUDINARY_UPLOAD_PRESET, CLOUDINARY_URL } from '../cloudDinaryConfig';
-import axios from 'axios';
-import ImageResize from 'quill-image-resize-module-react';
-import parse from 'html-react-parser'; // Parse 
-import { quillFormats } from '../const/config';
+import ImageResize from "quill-image-resize-module-react";
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef
+} from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { quillFormats } from "../const/config";
 
-ReactQuill.Quill.register('modules/imageResize', ImageResize);
-
+ReactQuill.Quill.register("modules/imageResize", ImageResize);
 
 const QuillWrapper = forwardRef((props, ref) => (
   <div className="quill-wrapper">
@@ -16,16 +17,10 @@ const QuillWrapper = forwardRef((props, ref) => (
   </div>
 ));
 
-QuillWrapper.displayName = 'QuillWrapper';
+QuillWrapper.displayName = "QuillWrapper";
 
-const ReactQuillEditor = ({onChange}) => {
-  const [value, setValue] = useState('');
+const ReactQuillEditor = ({ onChange, value }) => {
   const quillRef = useRef();
-
-
-  useEffect(() => {
-      onChange(value);
-  }, [value]);
 
   useEffect(() => {
     if (quillRef.current) {
@@ -34,39 +29,45 @@ const ReactQuillEditor = ({onChange}) => {
 
       // Tạo module để xử lý keyboard bindings
       const keyboard = quill.keyboard;
-      
+
       // Xử lý phím Delete
-      keyboard.addBinding({
-        key: 46 // mã phím Delete
-      }, (range, context) => {
-        if (range.length === 0) {
-          const [leaf] = quill.getLeaf(range.index);
-          if (leaf.domNode && leaf.domNode.tagName === 'img') {
-            quill.deleteText(range.index, 1);
-            return false;
+      keyboard.addBinding(
+        {
+          key: 46, // mã phím Delete
+        },
+        (range, context) => {
+          if (range.length === 0) {
+            const [leaf] = quill.getLeaf(range.index);
+            if (leaf.domNode && leaf.domNode.tagName === "img") {
+              quill.deleteText(range.index, 1);
+              return false;
+            }
           }
+          return true;
         }
-        return true;
-      });
+      );
 
       // Xử lý phím Backspace
-      keyboard.addBinding({
-        key: 8 // mã phím Backspace
-      }, (range, context) => {
-        if (range.length === 0 && range.index > 0) {
-          const [leaf] = quill.getLeaf(range.index - 1);
-          if (leaf.domNode && leaf.domNode.tagName === 'img') {
-            quill.deleteText(range.index - 1, 1);
-            return false;
+      keyboard.addBinding(
+        {
+          key: 8, // mã phím Backspace
+        },
+        (range, context) => {
+          if (range.length === 0 && range.index > 0) {
+            const [leaf] = quill.getLeaf(range.index - 1);
+            if (leaf.domNode && leaf.domNode.tagName === "img") {
+              quill.deleteText(range.index - 1, 1);
+              return false;
+            }
           }
+          return true;
         }
-        return true;
-      });
+      );
     }
   }, []);
 
   // Handler cho upload ảnh
-   // Định nghĩa handlers với useCallback
+  // Định nghĩa handlers với useCallback
   //  const imageHandler = useCallback(() => {
   //   const input = document.createElement('input');
   //   input.setAttribute('type', 'file');
@@ -113,13 +114,13 @@ const ReactQuillEditor = ({onChange}) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+      reader.onerror = (error) => reject(error);
     });
   };
 
-   // Convert Base64 to File
-   const base64ToFile = (base64, filename) => {
-    const arr = base64.split(',');
+  // Convert Base64 to File
+  const base64ToFile = (base64, filename) => {
+    const arr = base64.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
     let n = bstr.length;
@@ -130,11 +131,10 @@ const ReactQuillEditor = ({onChange}) => {
     return new File([u8arr], filename, { type: mime });
   };
 
-
   const imageHandler = useCallback(() => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
     input.click();
 
     input.onchange = async () => {
@@ -143,19 +143,18 @@ const ReactQuillEditor = ({onChange}) => {
         try {
           // Convert to base64
           const base64 = await fileToBase64(file);
-          
+
           const editor = quillRef.current?.getEditor();
           if (editor) {
             const range = editor.getSelection(true);
-            editor.insertEmbed(range.index, 'image', base64);
+            editor.insertEmbed(range.index, "image", base64);
           }
         } catch (error) {
-          console.error('Error:', error);
+          console.error("Error:", error);
         }
       }
     };
   }, []);
-  
 
   const modules = {
     toolbar: {
@@ -177,31 +176,31 @@ const ReactQuillEditor = ({onChange}) => {
       ],
       handlers: {
         image: imageHandler,
-      } 
+      },
     },
     imageResize: {
-      parchment: ReactQuill.Quill.import('parchment'),
-      modules: ['Resize', 'DisplaySize', 'Toolbar'],
+      parchment: ReactQuill.Quill.import("parchment"),
+      modules: ["Resize", "DisplaySize", "Toolbar"],
       displayStyles: {
-        backgroundColor: 'black',
-        border: 'none',
-        color: 'white'
-      }
-    }
+        backgroundColor: "black",
+        border: "none",
+        color: "white",
+      },
+    },
   };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
-      <QuillWrapper 
+      <QuillWrapper
         ref={quillRef}
         theme="snow"
         value={value}
-        onChange={setValue}
+        onChange={onChange}
         formats={quillFormats}
         modules={modules}
         className="h-96 mb-12"
       />
-      
+
       {/* <div className="mt-8">
         <h3 className="text-lg font-semibold mb-2">Preview:</h3>
         <div 

@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Button, Dropdown, Form, Layout, message, Tabs} from 'antd';
 import {DownOutlined, GlobalOutlined, UserOutlined} from '@ant-design/icons';
-import AboutForm from './AboutForm';
-import BannerForm from './BannerForm';
-import HeaderForm from './HeaderForm';
+import AboutForm from './AboutForm.jsx';
+import BannerForm from './BannerForm.jsx';
+import HeaderForm from './HeaderForm.jsx';
 import PersonalProjectsForm from "./PersonalProjectForm.jsx";
 import {updateData} from "../firebaseFunctions.js";
 import {auth, database} from "../firebaseConfig.js";
@@ -11,6 +11,7 @@ import {getAuth, signOut} from "firebase/auth";
 import RealProjects from './real_projects/RealProjects.jsx';
 import { useSetRecoilState } from 'recoil';
 import { currentLanguage } from '../recoil/atom.jsx';
+import { get } from 'firebase/database';
 
 const { Header, Content } = Layout;
 const logout = async (auth) => {
@@ -49,7 +50,7 @@ const ContentManager = () => {
           message.success('Personal Projects tab updated successfully.');
           break;
           case '5':
-            console.log(values.realProjects)
+            await updateData(database, 'realProjects', values.realProjects || {});
             message.success('Personal Projects tab updated successfully.');
             break;
         default:

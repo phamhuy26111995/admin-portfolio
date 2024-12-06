@@ -8,11 +8,11 @@ function DatePickerCustom({ onChange, formatValue, value }) {
     onChange(dayString);
   }
 
-  const dateValue = value ? dayjs(value, formatValue || 'DD/MM/YYYY') : null;
+  const dateValue = value ? dayjs(value, formatValue || "DD/MM/YYYY") : null;
 
   return (
     <DatePicker
-    allowClear={false}
+      allowClear={false}
       value={dateValue}
       format={formatValue || "DD/MM/YYYY"}
       onChange={onChangeValue}

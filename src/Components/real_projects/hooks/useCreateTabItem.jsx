@@ -4,16 +4,19 @@ import { database } from "../../../firebaseConfig";
 import { getData } from "../../../firebaseFunctions";
 import { useRecoilValue } from "recoil";
 import { currentLanguage } from "../../../recoil/atom";
+import { uniqueId } from "lodash";
 
 function useCreateTabItem(form) {
   const [activeKey, setActiveKey] = useState(0);
   const language = useRecoilValue(currentLanguage);
   const [items, setItems] = useState([]);
-  const newTabIndex = useRef(0);
+  const firstRender = useRef(false);
 
 
   useEffect(() => {
+    if(firstRender.current) return;
     getRealProjects();
+    firstRender.current = true;
   },[])
 
   async function getRealProjects() {
@@ -27,30 +30,14 @@ function useCreateTabItem(form) {
         label: data[key][language]['projectInfo']['title'],
         children: <TabContent key={key} tabName={key}  />,
       };
-      setItems((prevItems) => [...prevItems, item]);
-
-      
+      setItems((prevItems) => [...prevItems, item]);  
     })
 
-    const maxProjectNumber = getMaxProjectNumber(data);
-
-    newTabIndex.current = maxProjectNumber;
-
-    form.setFieldsValue({ realProjects: data });
+    form.setFieldsValue({ realProjects:  data });
+    setActiveKey(Object.keys(data)[0]);
   }
 
-  function getMaxProjectNumber(data) {
-    // Lấy các key từ object
-    const keys = Object.keys(data);
-  
-    // Tách số từ key và tìm số lớn nhất
-    const maxNumber = keys
-      .map(key => parseInt(key.replace("project_", ""), 10)) // Tách số từ key
-      .filter(num => !isNaN(num)) // Lọc các giá trị hợp lệ (không phải NaN)
-      .reduce((max, current) => Math.max(max, current), 0); // Tìm số lớn nhất
-  
-    return maxNumber;
-  }
+
   
  
   function onChangeActiveTab(key) {
@@ -85,8 +72,9 @@ function useCreateTabItem(form) {
     setActiveKey(newActiveKey);
   }
 
+
   function add() {
-    const newActiveKey = `project_${newTabIndex.current++}`;
+    const newActiveKey = uniqueId('project_') + Date.now().toString(36) + Math.random().toString(36).substr(2, 9); ;
     const newPanes = [...items];
     newPanes.push({
       label: 'New Project',
