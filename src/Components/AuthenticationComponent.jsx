@@ -5,45 +5,40 @@ import {getData} from "../firebaseFunctions.js";
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { allowedUsersLogin, userLoginState } from '../recoil/atom.jsx';
 
+const logout = async (auth) => {
+  try {
+    await signOut(auth); // Đảm bảo signOut hoàn thành
+  } catch (error) {
+    console.log("Logout failed:", error.message); // Thêm logging chi tiết để debug
+  }
+};
+
 const login = async (setUserState) => {
   try {
     console.log("Popup opening...")
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     const userEmail = user.email;
-    setUserState(user);
     const acceptedEmailsString= await getData(database, 'acceptedEmail');
 
-    if(!acceptedEmailsString) logout(auth);
-    debugger
+    if(!acceptedEmailsString) await logout(auth); 
 
     const acceptedEmailsArray = acceptedEmailsString.split(',');
+
     if (acceptedEmailsArray.includes(userEmail)) {
       console.log("Login successful. Email is accepted:", userEmail);
       // Proceed with your app logic here
     } else {
       console.log("Login failed. Email not accepted:", userEmail);
-      const logout = async (auth) => {
-        try {
-          await signOut(auth);
-        } catch (error) {}
-      };
       await logout(auth)
-    }
+    } 
+    setUserState(user);
   } catch (error) {
     console.error("Error during login:", error.message);
   }
 };
 
-// async function logout(auth) {
-//   try {
-//     await signOut(auth);
-//   } catch (error) {
-//     console.error('Error signing out:', error);
-//   }
-// }
-
-
+  
 const WithAuthentication = ({ children }) => {
   const [user, setUser] = useState(null);
   const setUserState = useSetRecoilState(userLoginState);
@@ -79,7 +74,6 @@ const WithAuthentication = ({ children }) => {
 export default WithAuthentication;
 
 const LoginModal = ({handleLogin}) => {
-
 
   return (
     <div style={styles.backdrop}>

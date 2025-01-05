@@ -1,6 +1,5 @@
 import React, {useRef, useState} from 'react';
 import {Button, Dropdown, Form, Layout, message, Tabs} from 'antd';
-import {DownOutlined, GlobalOutlined, UserOutlined} from '@ant-design/icons';
 import AboutForm from './AboutForm.jsx';
 import BannerForm from './BannerForm.jsx';
 import HeaderForm from './HeaderForm.jsx';
@@ -11,9 +10,9 @@ import {getAuth, signOut} from "firebase/auth";
 import RealProjects from './real_projects/RealProjects.jsx';
 import { useSetRecoilState } from 'recoil';
 import { currentLanguage } from '../recoil/atom.jsx';
-import { get } from 'firebase/database';
+import PageHeader from './header/PageHeader.jsx';
 
-const { Header, Content } = Layout;
+const {Content } = Layout;
 const logout = async (auth) => {
   try {
     await signOut(auth);
@@ -96,41 +95,6 @@ const ContentManager = () => {
     setAppKey(appKey => appKey + 1);
   };
 
-  const userItems = [
-    {
-      label: (
-        <div>Profile</div>
-      ),
-      key: '0',
-    },
-    {
-      label: (
-        <div onClick={handleLogout}>Logout</div>
-      ),
-      key: '1',
-    },
-    {
-      type: 'divider',
-    }
-  ];
-
-  const languageItems = [
-    {
-      label: (
-        <div onClick={() => handleLanguageChange({ key: 'en-US' })}>English</div>
-      ),
-      key: 'en-US',
-    },
-    {
-      label: (
-        <div onClick={() => handleLanguageChange({ key: 'vi-VN' })}>Tiếng Việt</div>
-      ),
-      key: 'vi-VN',
-    },
-    {
-      type: 'divider',
-    }
-  ];
 
   const tabItems = [
     {
@@ -142,7 +106,7 @@ const ContentManager = () => {
       key: '2',
       label: 'Banner',
       children: <BannerForm form={form} language={language} />,
-    },
+    },  
     {
       key: '3',
       label: 'Header',
@@ -162,19 +126,13 @@ const ContentManager = () => {
 
   return (
     <Layout key={appKey}>
-      <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff' }}>
-        <Dropdown menu={{ items: languageItems }} trigger={['click']}>
-          <Button icon={<GlobalOutlined />}>
-            Language <DownOutlined />
-          </Button>
-        </Dropdown>
-        <Dropdown menu={{ items: userItems }} trigger={['click']}>
-          <Button icon={<UserOutlined />}>
-            {currentUser && currentUser.displayName} <DownOutlined />
-          </Button>
-        </Dropdown>
-      </Header>
-      <Content style={{ padding: '20px' }}>
+      <PageHeader 
+      handleLanguageChange={handleLanguageChange}
+      handleLogout={handleLogout}
+      currentUser={currentUser}
+      language={language}
+      />
+      <Content style={{ padding: '20px' }}>   
         <div style={{ display: 'flex' }}>
           <div style={{ flex: 1 }}>
             <Form form={form} onFinish={onFinish} layout="vertical">
